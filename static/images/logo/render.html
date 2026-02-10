@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Smooth Sparse Sphere Rasterizer</title>
+<style>
+    body { margin:0; background:black; }
+    canvas { display:block; margin:auto; background:black; }
+</style>
+</head>
+
+<body>
+<canvas id="c" width="800" height="600"></canvas>
+
+<script>
+const canvas = document.getElementById("c");
+const ctx = canvas.getContext("2d");
+
+// --- CONFIGURATION ---
+const config = {
+    sphereWidth: 1,
+    sphereOpacity: 1,
+    triangleWidth: 10,
+    outlineWidth: 16,
+    rotationTilt: 8 * Math.PI / 180,
+    radius: 1.6,
+    offsetY: -2.5
+};
+
+
+function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+    canvas.style.width = window.innerWidth + "px";
+    canvas.style.height = window.innerHeight + "px";
+    ctx.scale(dpr, dpr);
+}
+window.addEventListener('resize', resize);
+resize();
+
+class Vec3 {
+    constructor(x, y, z) { this.x = x; this.y = y; this.z = z; }
+}
+
+function project(v) {
+    const fov = 500;
+    const z = v.z + 6;
+    return {
+        x: window.innerWidth / 2 + (v.x * fov) / z,
+        y: window.innerHeight / 2 - (v.y * fov) / z,
+        z: v.z
+    };
+}
+
+function rotateY(v, angle) {
+    const cos = Math.cos(angle), sin = Math.sin(angle);
+    return new Vec3(v.x * cos - v.z * sin, v.y, v.x * sin + v.z * cos);
+}
+
+// --- RENDERING ENGINE ---
+
+function drawSegment(s) {
+    const isTriangle = s.type === 'triangle';
+    const isFront = s.z < 0;
+
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    if (isTriangle) {
+        // Uniform thickness for all triangle parts
+        const thickness = config.triangleWidth;
+
+        if (isFront) {
+            // Draw Outline for front-facing edges only
+            ctx.strokeStyle = "black";
+            ctx.lineWidth = config.outlineWidth;
+            ctx.beginPath();
+            ctx.moveTo(s.p1.x, s.p1.y);
+            ctx.lineTo(s.p2.x, s.p2.y);
+            ctx.stroke();
+        }
+
+        // Draw the actual white line
+        ctx.strokeStyle = "white";
+        ctx.lineWidth = thickness;
+    } else {
+        // Sphere lines
+        ctx.strokeStyle = `rgba(255, 255, 255, ${config.sphereOpacity})`;
+        ctx.lineWidth = config.sphereWidth;
+    }
+
+    ctx.beginPath();
+    ctx.moveTo(s.p1.x, s.p1.y);
+    ctx.lineTo(s.p2.x, s.p2.y);
+    ctx.stroke();
+}
+
+function render() {
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+
+    const LAT = 72, LON = 144;
+    const LAT_SPACING = 12, LON_SPACING = 12;
+
+    const sceneTransform = (p) => {
+        let v = rotateY(p, config.rotationTilt);
+        return new Vec3(v.x, v.y + config.offsetY, v.z);
+    };
+
+    let segments = [];
+    let spherePoints = [];
+
+    for (let i = 0; i <= LAT; i++) {
+        let theta = i * Math.PI / LAT;
+        for (let j = 0; j <= LON; j++) {
+            let phi = j * 2 * Math.PI / LON;
+            let p = new Vec3(
+                config.radius * Math.sin(theta) * Math.cos(phi),
+                config.radius * Math.cos(theta),
+                config.radius * Math.sin(theta) * Math.sin(phi)
+            );
+            spherePoints.push(project(sceneTransform(p)));
+        }
+    }
+
+    // Sphere segments
+    for (let i = 0; i <= LAT; i += LAT_SPACING) {
+        for (let j = 0; j < LON; j++) {
+            let a = spherePoints[i * (LON + 1) + j], b = spherePoints[i * (LON + 1) + j + 1];
+            segments.push({ p1: a, p2: b, z: (a.z + b.z) / 2, type: 'sphere' });
+        }
+    }
+    for (let j = 0; j <= LON; j += LON_SPACING) {
+        for (let i = 0; i < LAT; i++) {
+            let a = spherePoints[i * (LON + 1) + j], b = spherePoints[(i + 1) * (LON + 1) + j];
+            segments.push({ p1: a, p2: b, z: (a.z + b.z) / 2, type: 'sphere' });
+        }
+    }
+
+    // Triangle segments
+    const w = config.radius * 1.2;
+    const rotYLocal = (v, a) => new Vec3(v.x * Math.cos(a) - v.z * Math.sin(a), v.y, v.x * Math.sin(a) + v.z * Math.cos(a));
+    const trisRaw = [
+        [new Vec3(-w, config.radius, 0), new Vec3(w, config.radius, 0), new Vec3(0, -config.radius, 0)].map(v => rotYLocal(v, Math.PI/4)),
+        [new Vec3(0, config.radius, -w), new Vec3(0, config.radius, w), new Vec3(0, -config.radius, 0)].map(v => rotYLocal(v, Math.PI/4))
+    ];
+
+    trisRaw.forEach(tri => {
+        let pts = tri.map(p => project(sceneTransform(p)));
+        for (let i = 0; i < 3; i++) {
+            let a = pts[i], b = pts[(i+1)%3];
+            segments.push({ p1: a, p2: b, z: (a.z + b.z) / 2, type: 'triangle' });
+        }
+    });
+
+    // Sort: Keep front triangles on top, otherwise use depth
+    segments.sort((a, b) => {
+        const aFront = (a.type === 'triangle' && a.z < 0) ? 1 : 0;
+        const bFront = (b.type === 'triangle' && b.z < 0) ? 1 : 0;
+        if (aFront !== bFront) return aFront - bFront;
+        return b.z - a.z;
+    });
+
+    segments.forEach(drawSegment);
+}
+
+render();
+</script>
+</body>
+</html>
