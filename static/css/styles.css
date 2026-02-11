@@ -17,4 +17,18 @@ body {
     justify-content: center;
     position: relative;
     overflow-x: hidden;
+    width: 100%;
+}
+
+#waveWrapper {
+    width: 50%;
+    height: auto;
+}
+
+
+#waveCanvas {
+    width: 100%;
+    aspect-ratio: 1;
+    display: block;
+    background: transparent;
 }
