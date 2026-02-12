@@ -12,6 +12,7 @@ permalink: /
     <script src="static/js/main.js" type="module"></script>
     <script src="static/js/wave.js" type="module"></script>
     <script src="static/js/stars.js" type="module"></script>
+    <script src="static/js/flow.js" type="module"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
@@ -20,26 +21,53 @@ permalink: /
 <body>
     <div id="mainContent">
         <div id="titleScreen" class="fullscreen">
-            <canvas id="starCanvas"></canvas>
-            <div id="titleOverlay">
-                <div id="titleWrapper">
-                    <div id="title">
+            <canvas id="starCanvas" class="clickable"></canvas>
+            <div id="titleOverlay" class="overlayFull">
+                <div id="titleWrapper" class="clickable">
+                    <div id="titleMain">
                         TJ Graphics
                     </div>
                 </div>
             </div>
             <button id="scrollArrow" class="arrowButton">↓</button>
         </div>
+        <div id="introTransition" class="transitionSec"></div>
         <div id="detailScreen" class="fullscreen">
-            <div id="clubDetailsPane">
-                <div id="clubDetails">
-                    TODO
+            <div id="detailOverlay" class="overlayFull clickable">
+                <div id="clubDetailsPane">
+                    <div id="detailsWrap">
+                        <div id="details">
+                            <p>Meetings every <strong><em>Friday 8B</em></strong></p>
+                            <p>Learn everything about computer graphics, from the basics of rasterization to cutting edge algorithms</p>
+                            <p>Activites include:</p>
+                            <ul>
+                                <li>Lectures</li>
+                                <li>In-house shader design competitions</li>
+                                <li>Long-term project guidance</li>
+                                <li>...Snacks!</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div id="waveWrapper">
+                    <canvas id="waveCanvas" class="clickable" width="1000px" height="1000px"></canvas>
                 </div>
             </div>
-            <div id="waveWrapper">
-                <canvas id="waveCanvas" width="1000px" height="1000px"></canvas>
+            <div id="detailBack" class="overlayFull">
+                <div id="flowWrap" class="overlayFull">
+                    <canvas id="flowCanvas"></canvas>
+                </div>
             </div>
         </div>
+        <div id="secondTransition" class="transitionSec"></div>
+        <div id="infoScreen" class="fullscreen">
+            
+        </div>
+    </div>
+    <div id="pageIndicator">
+        <div class="dot active" data-index="0"></div>
+        <div class="dot" data-index="1"></div>
+        <div class="dot" data-index="2"></div>
     </div>
 </body>
 </html>

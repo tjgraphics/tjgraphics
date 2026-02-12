@@ -1,12 +1,43 @@
 const container = document.getElementById("mainContent");
 const sections = document.querySelectorAll(".fullscreen");
 
+const dots = document.querySelectorAll(".dot");
+const pageIndicator = document.getElementById("pageIndicator");
+
+const overlay = document.getElementById("scrollFadeOverlay");
+
+
 let currentIndex = 0;
 let isAnimating = false;
 
-// Variables to track touch position
 let touchStartY = 0;
 let touchEndY = 0;
+
+const lightPages = [2];
+
+dots.forEach(dot => {
+    dot.addEventListener("click", () => {
+        const index = parseInt(dot.dataset.index);
+        scrollToIndex(index);
+    });
+});
+
+function updateIndicator() {
+    dots.forEach(dot => dot.classList.remove("active"));
+    dots[currentIndex].classList.add("active");
+
+    if (currentIndex > 0) {
+        pageIndicator.classList.add("visible");
+    } else {
+        pageIndicator.classList.remove("visible");
+    }
+
+    if(lightPages.includes(currentIndex)) {
+        pageIndicator.classList.add("light-theme");
+    } else {
+        pageIndicator.classList.remove("light-theme");
+    }
+}
 
 function scrollToIndex(index) {
     if (index < 0 || index >= sections.length || isAnimating) return;
@@ -19,10 +50,13 @@ function scrollToIndex(index) {
         behavior: "smooth"
     });
 
+    updateIndicator();
+
     setTimeout(() => {
         isAnimating = false;
     }, 700);
 }
+
 
 // --- Desktop: Wheel Event ---
 container.addEventListener("wheel", (e) => {
@@ -48,19 +82,17 @@ container.addEventListener("touchend", (e) => {
 
 function handleGesture() {
     const swipeDistance = touchStartY - touchEndY;
-    const threshold = 50; // Minimum pixels to trigger a scroll
+    const threshold = 50;
 
     if (Math.abs(swipeDistance) > threshold) {
         if (swipeDistance > 0) {
-            // Swiped up (move to next section)
             scrollToIndex(currentIndex + 1);
         } else {
-            // Swiped down (move to previous section)
             scrollToIndex(currentIndex - 1);
         }
     }
 }
 
 document.getElementById("scrollArrow").addEventListener("click", () => {
-    scrollToIndex(1); // Scrolls to the second section (detailScreen)
+    scrollToIndex(1);
 });

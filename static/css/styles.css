@@ -1,3 +1,9 @@
+:root {
+    --transition-height: 20vh;
+    --dark-grey: rgb(6, 6, 6);
+    --light-white: rgb(243, 240, 233);
+}
+
 *, *::before, *::after {
     box-sizing: border-box;
 }
@@ -23,18 +29,14 @@ body {
     display: flex;
     overflow: hidden;
     width: 100%;
+    z-index: -2;
 }
 
 #mainContent {
-    /* display: flex;
-    justify-content: center;
-    flex-direction: column; */
-    overflow-x: hidden;
     overflow-y: scroll;
     width: 100%;
     height: 100vh;
 
-    /* scroll-snap-type: y mandatory; */
     scrollbar-width: none;
 }
 
@@ -45,20 +47,17 @@ body {
 .fullscreen {
     height: 100vh;
     width: 100%;
-    padding: 20px;
-
-    /* scroll-snap-align: center; */
-}
-
-#titleScreen {
     position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    pointer-events: none;
 }
 
-#titleOverlay {
+.transitionSec {
+    position: relative;
+    height: var(--transition-height);
+    width: 100%;
+}
+
+.overlayFull {
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -67,6 +66,19 @@ body {
     height: 100vh;
     position: absolute;
     top: 0;
+    pointer-events: none;
+}
+
+#titleScreen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+}
+
+.clickable {
+    pointer-events: auto !important;
 }
 
 #titleWrapper {
@@ -78,10 +90,10 @@ body {
     min-width: 30%;
     /* background: white; */
     outline: 6px solid white;
-    backdrop-filter: blur(1px);
+    backdrop-filter: blur(2px);
 }
 
-#title {
+#titleMain {
     padding: 30px;
     text-align: center;
     font-size: 3em;
@@ -92,7 +104,6 @@ body {
     /* position: fixed; */
     width: 100%;
     height: inherit;
-    z-index: -1;
 }
 
 .arrowButton {
@@ -107,6 +118,7 @@ body {
     cursor: pointer;
     z-index: 10;
     animation: bounce 2s infinite;
+    pointer-events: auto;
 }
 
 @keyframes bounce {
@@ -115,11 +127,21 @@ body {
     60% {transform: translateX(-50%) translateY(-5px);}
 }
 
+#introTransition {
+    background: var(--dark-grey);
+    border-radius: 10em 10em 0 0;
+}
+
 #detailScreen {
+    background: var(--dark-grey);
+}
+
+#detailOverlay {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    z-index: 1;
 }
 
 #clubDetailsPane {
@@ -130,10 +152,35 @@ body {
     align-items: center;
 }
 
+#detailsWrap {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 100px 0px 100px 0px;
+    outline: 2px solid white;
+    width: 80%;
+    margin-left: 10%;
+    backdrop-filter: blur(2px);
+}
+
+#details {
+    font-size: 1.5em;
+    padding: 40px;
+}
+
+#details>ul {
+    line-height: 1.2;
+}
+
+#details>ul>li {
+    padding: 5px;
+}
+
 #waveWrapper {
     width: 50%;
     height: auto;
-    padding: 100px;
+    padding: 3%;
 }
 
 #waveCanvas {
@@ -141,4 +188,91 @@ body {
     aspect-ratio: 1;
     display: block;
     background: transparent;
+}
+
+#flowWrap {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+}
+
+#flowWrap::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, var(--dark-grey) 2%, transparent 80%);
+    pointer-events: none;
+    z-index: 0;
+    /* backdrop-filter: blur(1px); */
+}
+
+#flowCanvas {
+    background: transparent;
+}
+
+#secondTransition {
+    border-radius: 10em 10em 0em 0em;
+    background: var(--light-white);
+}
+
+#secondTransition::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--dark-grey);
+    pointer-events: none;
+    z-index: -1;
+}
+
+#infoScreen {
+    background: var(--light-white);
+    color: black;
+}
+
+#pageIndicator {
+    position: fixed;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    z-index: 100;
+}
+
+#pageIndicator.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border: 2px solid white;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.dot.active {
+    background: white;
+    transform: scale(1.2);
+}
+
+/* When the parent is in dark-theme, change the dots to black */
+#pageIndicator.light-theme .dot {
+    border-color: black;
+}
+
+#pageIndicator.light-theme .dot.active {
+    background: black;
 }
