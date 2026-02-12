@@ -1,8 +1,8 @@
 const STAR_COLOR = "#fff";
-const STAR_SIZE = 3;
+const STAR_SIZE = 2;
 const STAR_MIN_SCALE = 0.2;
 const OVERFLOW_THRESHOLD = 50;
-const STAR_COUNT = (window.innerWidth + window.innerHeight) / 8;
+const STAR_COUNT = (window.innerWidth + window.innerHeight) / 4;
 
 const canvas = document.getElementById("starCanvas");
 let context = canvas.getContext("2d");
@@ -15,9 +15,14 @@ let stars = [];
 
 let pointerX, pointerY;
 
-let velocity = { x: 0, y: 0, tx: 0, ty: 0, z: 0.0005 };
+let velocity = { x: 0, y: 0, tx: 0, ty: 0, z: 0.0015 };
+
+let lengthFactor = 10;
 
 let touchInput = false;
+
+let smoothDX = 0;
+let smoothDY = 0;
 
 generate();
 resize();
@@ -35,6 +40,7 @@ function generate() {
             x: 0,
             y: 0,
             z: STAR_MIN_SCALE + Math.random() * (1 - STAR_MIN_SCALE),
+            trail: []   // NEW
         });
     }
 }
@@ -85,6 +91,7 @@ function recycleStar(star) {
         star.x = width * Math.random();
         star.y = height + OVERFLOW_THRESHOLD;
     }
+    star.trail = [];
 }
 
 function resize() {
@@ -109,19 +116,27 @@ function step() {
 }
 
 function update() {
-    velocity.tx *= 0.96;
-    velocity.ty *= 0.96;
+    velocity.tx *= 0.97;
+    velocity.ty *= 0.97;
 
-    velocity.x += (velocity.tx - velocity.x) * 0.8;
-    velocity.y += (velocity.ty - velocity.y) * 0.8;
+    velocity.x += (velocity.tx - velocity.x) * 0.9;
+    velocity.y += (velocity.ty - velocity.y) * 0.9;
 
     stars.forEach((star) => {
-        star.x += velocity.x * star.z;
-        star.y += velocity.y * star.z;
+        star.x += velocity.x * star.z * 0.2;
+        star.y += velocity.y * star.z * 0.2;
 
         star.x += (star.x - width / 2) * velocity.z * star.z;
         star.y += (star.y - height / 2) * velocity.z * star.z;
         star.z += velocity.z;
+
+        star.trail.push({ x: star.x, y: star.y });
+
+        // limit trail length based on star depth
+        const maxLength = Math.floor(lengthFactor * star.z);
+        if (star.trail.length > maxLength) {
+            star.trail.shift();
+        }
 
         // recycle when out of bounds
         if (
@@ -144,17 +159,24 @@ function render() {
         context.strokeStyle = STAR_COLOR;
 
         context.beginPath();
-        context.moveTo(star.x, star.y);
+        let trail = star.trail;
 
-        var tailX = velocity.x * 2,
-            tailY = velocity.y * 2;
+        if (trail.length > 1) {
+            context.moveTo(trail[0].x, trail[0].y);
 
-        // stroke() wont work on an invisible line
-        if (Math.abs(tailX) < 0.1) tailX = 0.5;
-        if (Math.abs(tailY) < 0.1) tailY = 0.5;
+            for (let i = 1; i < trail.length - 1; i++) {
+                let xc = (trail[i].x + trail[i + 1].x) / 2;
+                let yc = (trail[i].y + trail[i + 1].y) / 2;
+                context.quadraticCurveTo(trail[i].x, trail[i].y, xc, yc);
+            }
 
-        context.lineTo(star.x + tailX, star.y + tailY);
-
+            // last segment
+            let last = trail[trail.length - 1];
+            context.lineTo(last.x, last.y);
+        } else {
+            context.moveTo(star.x, star.y);
+            context.lineTo(star.x + 0.5, star.y + 0.5);
+        }
         context.stroke();
     });
 }
@@ -164,8 +186,13 @@ function movePointer(x, y) {
         let ox = x - pointerX,
             oy = y - pointerY;
 
-        velocity.tx = velocity.tx + (ox / 8) * scale * (touchInput ? 1 : -1);
-        velocity.ty = velocity.ty + (oy / 8) * scale * (touchInput ? 1 : -1);
+        // Smooth the raw mouse delta (low-pass filter)
+        smoothDX += (ox - smoothDX) * 0.08;
+        smoothDY += (oy - smoothDY) * 0.08;
+
+        // Apply the SMOOTHED delta instead of raw
+        velocity.tx += (smoothDX / 50) * scale * (touchInput ? 1 : -1);
+        velocity.ty += (smoothDY / 50) * scale * (touchInput ? 1 : -1);
     }
 
     pointerX = x;

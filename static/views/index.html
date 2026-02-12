@@ -7,25 +7,39 @@ permalink: /
 <head>
     <meta charset="UTF-8">
     <link rel="icon" type="image/x-icon" href="static/images/logo/logoDark.jpg">
-    <link rel="stylesheet" href="static/css/styles.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TJ Graphics</title>
+    <script src="static/js/main.js" type="module"></script>
+    <script src="static/js/wave.js" type="module"></script>
+    <script src="static/js/stars.js" type="module"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="static/css/styles.css">
 </head>
 <body>
-    <div id="titleScreen" class="fullscreen">
-        <div id="titleWrapper">
-            <div id="title">
-                TJ Graphics
+    <div id="mainContent">
+        <div id="titleScreen" class="fullscreen">
+            <canvas id="starCanvas"></canvas>
+            <div id="titleOverlay">
+                <div id="titleWrapper">
+                    <div id="title">
+                        TJ Graphics
+                    </div>
+                </div>
             </div>
+            <button id="scrollArrow" class="arrowButton">↓</button>
         </div>
-        <canvas id="starCanvas"></canvas>
-    </div>
-    <div id="detailScreen" class="fullscreen">
-        <div id="waveWrapper">
-            <canvas id="waveCanvas" width="1000px" height="1000px"></canvas>
+        <div id="detailScreen" class="fullscreen">
+            <div id="clubDetailsPane">
+                <div id="clubDetails">
+                    TODO
+                </div>
+            </div>
+            <div id="waveWrapper">
+                <canvas id="waveCanvas" width="1000px" height="1000px"></canvas>
+            </div>
         </div>
     </div>
 </body>
-<script src="static/js/wave.js" type="module"></script>
-<script src="static/js/stars2.js" type="module"></script>
 </html>
