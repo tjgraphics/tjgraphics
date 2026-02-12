@@ -12,9 +12,20 @@ permalink: /
     <title>TJ Graphics</title>
 </head>
 <body>
-    <div id="waveWrapper">
-        <canvas id="waveCanvas" width="1000px" height="1000px"></canvas>
+    <div id="titleScreen" class="fullscreen">
+        <div id="titleWrapper">
+            <div id="title">
+                TJ Graphics
+            </div>
+        </div>
+        <canvas id="starCanvas"></canvas>
+    </div>
+    <div id="detailScreen" class="fullscreen">
+        <div id="waveWrapper">
+            <canvas id="waveCanvas" width="1000px" height="1000px"></canvas>
+        </div>
     </div>
 </body>
-<script src="static/js/wave.js"></script>
+<script src="static/js/wave.js" type="module"></script>
+<script src="static/js/stars2.js" type="module"></script>
 </html>

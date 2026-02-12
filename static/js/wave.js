@@ -64,7 +64,7 @@ function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.restore();
 
-    ctx.strokeStyle = "black";
+    ctx.strokeStyle = "white";
     ctx.lineWidth = 2;
 
     for (let z = -gridSize; z <= gridSize; z++) {

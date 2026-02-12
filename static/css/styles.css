@@ -11,6 +11,10 @@ html {
 }
 
 body {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    background: black;
     margin: 0;
     min-height: 100vh;
     display: flex;
@@ -20,11 +24,37 @@ body {
     width: 100%;
 }
 
+.fullscreen {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#titleWrapper {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    height: 15%;
+    width: 20%;
+    background: white;
+    outline: 10px solid black;
+}
+
+#starCanvas {
+    position: absolute;
+    width: 100%;
+    height: inherit;
+    z-index: -1;
+}
+
 #waveWrapper {
     width: 50%;
     height: auto;
 }
-
 
 #waveCanvas {
     width: 100%;
