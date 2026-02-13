@@ -82,7 +82,7 @@ container.addEventListener("touchend", (e) => {
 
 function handleGesture() {
     const swipeDistance = touchStartY - touchEndY;
-    const threshold = 50;
+    const threshold = 80;
 
     if (Math.abs(swipeDistance) > threshold) {
         if (swipeDistance > 0) {

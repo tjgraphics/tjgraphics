@@ -248,6 +248,20 @@ body {
     color: black;
 }
 
+#infoPane {
+    font-size: 1.2em;
+    margin: 50px;
+    max-width: 90%;
+    width: 800px;
+}
+
+.sectionSep {
+    height: 1px;
+    background: #2e2e2e;
+    margin: 40px 0;
+    width: 90%;
+}
+
 #pageIndicator {
     position: fixed;
     right: 40px;
