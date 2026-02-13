@@ -17,8 +17,9 @@ function resize() {
     );
 
     const offsetX = -(rect.width / LOGICAL_SIZE) * (rect.width - LOGICAL_SIZE) / 2;
-    const offsetY = (rect.height / LOGICAL_SIZE) * ((rect.height - LOGICAL_SIZE) / 2 - rect.height/2) + 3*rect.height/5;
-    // const offsetY = (rect.width / LOGICAL_SIZE) * ((rect.height - LOGICAL_SIZE) / 2 - rect.height/2) + rect.height/2;
+
+    //Super scuffed centering
+    const offsetY = (rect.height / LOGICAL_SIZE) * ((rect.height - LOGICAL_SIZE) / 2 - rect.height/2) + rect.height/2 + 5*(rect.height)**(0.33);
 
     ctx.translate(offsetX, offsetY);
     ctx.scale(scale, scale);

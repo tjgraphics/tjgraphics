@@ -4,7 +4,9 @@
     --light-white: rgb(243, 240, 233);
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
@@ -36,12 +38,11 @@ body {
     overflow-y: scroll;
     width: 100%;
     height: 100vh;
-
     scrollbar-width: none;
 }
 
 #mainContent::-webkit-scrollbar {
-    display: none;              /* Chrome / Safari */
+    display: none; /* Chrome / Safari */
 }
 
 .fullscreen {
@@ -88,9 +89,9 @@ body {
     align-items: center;
     min-height: 15%;
     min-width: 30%;
-    /* background: white; */
     outline: 6px solid white;
     backdrop-filter: blur(2px);
+    margin: 0 20px;
 }
 
 #titleMain {
@@ -101,7 +102,6 @@ body {
 }
 
 #starCanvas {
-    /* position: fixed; */
     width: 100%;
     height: inherit;
 }
@@ -122,9 +122,19 @@ body {
 }
 
 @keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);}
-    40% {transform: translateX(-50%) translateY(-10px);}
-    60% {transform: translateX(-50%) translateY(-5px);}
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateX(-50%) translateY(0);
+    }
+    40% {
+        transform: translateX(-50%) translateY(-10px);
+    }
+    60% {
+        transform: translateX(-50%) translateY(-5px);
+    }
 }
 
 #introTransition {
@@ -169,11 +179,11 @@ body {
     padding: 40px;
 }
 
-#details>ul {
+#details > ul {
     line-height: 1.2;
 }
 
-#details>ul>li {
+#details > ul > li {
     padding: 5px;
 }
 
@@ -203,10 +213,13 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(to bottom, var(--dark-grey) 2%, transparent 80%);
+    background: linear-gradient(
+        to bottom,
+        var(--dark-grey) 2%,
+        transparent 80%
+    );
     pointer-events: none;
     z-index: 0;
-    /* backdrop-filter: blur(1px); */
 }
 
 #flowCanvas {
@@ -268,11 +281,221 @@ body {
     transform: scale(1.2);
 }
 
-/* When the parent is in dark-theme, change the dots to black */
 #pageIndicator.light-theme .dot {
     border-color: black;
 }
 
 #pageIndicator.light-theme .dot.active {
     background: black;
+}
+
+/* ===== MOBILE RESPONSIVE STYLES ===== */
+
+/* Tablet and smaller screens */
+@media screen and (max-width: 1024px) {
+    #titleMain {
+        font-size: 2.5em;
+        padding: 25px;
+    }
+
+    #details {
+        font-size: 1.3em;
+        padding: 30px;
+    }
+
+    #detailOverlay {
+        flex-direction: column-reverse;
+        padding: 20px 0;
+    }
+
+    #clubDetailsPane {
+        width: 90%;
+        order: 2;
+    }
+
+    #waveWrapper {
+        width: 80%;
+        order: 1;
+        padding: 5%;
+        margin-bottom: 20px;
+    }
+
+    #detailsWrap {
+        width: 90%;
+        margin: 20px auto;
+    }
+
+    #pageIndicator {
+        right: 20px;
+        gap: 15px;
+    }
+}
+
+/* Mobile phones */
+@media screen and (max-width: 768px) {
+    html {
+        font-size: 0.9em;
+    }
+
+    :root {
+        --transition-height: 15vh;
+    }
+
+    #titleWrapper {
+        min-width: 70%;
+        outline-width: 4px;
+        margin: 0 15px;
+    }
+
+    #titleMain {
+        font-size: 2em;
+        padding: 20px;
+    }
+
+    .arrowButton {
+        bottom: 80px;
+        font-size: 2.5rem;
+    }
+
+    #introTransition,
+    #secondTransition {
+        border-radius: 5em 5em 0 0;
+    }
+
+    #detailOverlay {
+        flex-direction: column-reverse;
+        padding: 10px 0;
+    }
+
+    #clubDetailsPane {
+        width: 95%;
+    }
+
+    #detailsWrap {
+        width: 85%;
+        margin: 15px auto;
+        outline-width: 2px;
+    }
+
+    #details {
+        font-size: 1em;
+        padding: 20px;
+    }
+
+    #details > ul > li {
+        padding: 3px;
+    }
+
+    #waveWrapper {
+        width: 90%;
+        padding: 5%;
+        margin-bottom: 15px;
+    }
+
+    #pageIndicator {
+        right: 15px;
+        gap: 12px;
+    }
+
+    .dot {
+        width: 10px;
+        height: 10px;
+        border-width: 2px;
+    }
+}
+
+/* Small mobile phones */
+@media screen and (max-width: 480px) {
+    html {
+        font-size: 0.85em;
+    }
+
+    #titleWrapper {
+        min-width: 80%;
+        outline-width: 3px;
+    }
+
+    #titleMain {
+        font-size: 1.6em;
+        padding: 15px;
+    }
+
+    .arrowButton {
+        bottom: 60px;
+        font-size: 2rem;
+    }
+
+    #details {
+        font-size: 0.95em;
+        padding: 15px;
+    }
+
+    #detailsWrap {
+        margin: 10px auto;
+    }
+
+    #waveWrapper {
+        width: 95%;
+    }
+
+    #pageIndicator {
+        right: 10px;
+        gap: 10px;
+    }
+
+    .dot {
+        width: 8px;
+        height: 8px;
+    }
+}
+
+/* Landscape orientation on mobile */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    #titleMain {
+        font-size: 1.8em;
+        padding: 15px;
+    }
+
+    .arrowButton {
+        bottom: 40px;
+        font-size: 2rem;
+    }
+
+    #detailsWrap {
+        margin: 20px auto;
+    }
+
+    #details {
+        font-size: 0.9em;
+        padding: 15px;
+    }
+
+    #waveWrapper {
+        width: 40%;
+    }
+
+    #clubDetailsPane {
+        width: 55%;
+    }
+
+    #detailOverlay {
+        flex-direction: row;
+    }
+}
+
+/* Touch device improvements */
+@media (hover: none) and (pointer: coarse) {
+    .arrowButton {
+        padding: 10px;
+    }
+
+    .dot {
+        width: 14px;
+        height: 14px;
+        border-width: 3px;
+    }
+
+    .clickable {
+        cursor: default;
+    }
 }

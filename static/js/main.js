@@ -93,6 +93,9 @@ function handleGesture() {
     }
 }
 
-document.getElementById("scrollArrow").addEventListener("click", () => {
-    scrollToIndex(1);
+// document.getElementById("scrollArrow")
+document.querySelectorAll(".arrowButton").forEach(
+    (button) => {button.addEventListener("click", () => {
+        scrollToIndex(currentIndex + 1);
+    })
 });
