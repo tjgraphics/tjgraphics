@@ -248,7 +248,24 @@ body {
     color: black;
 }
 
-#infoPane {
+#thirdTransition {
+    border-radius: 0em 0em 10em 10em;
+    background: var(--light-white);
+}
+
+#thirdTransition::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--dark-grey);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.infoPane {
     font-size: 1.2em;
     margin: 50px;
     max-width: 90%;
