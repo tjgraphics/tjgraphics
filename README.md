@@ -6,3 +6,4 @@ Static page generated using Jekyll
 
 To test locally:
 jekyll serve --incremental
+
