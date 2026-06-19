@@ -1,3 +1,4 @@
+// graphics club -Andrew
 const container = document.getElementById("mainContent");
 const sections = document.querySelectorAll(".fullscreen");
 
